@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { uploadNote } from "@/lib/firestore";
-import { uploadPdfToStorage } from "@/lib/storage";
+import { useUploadThing } from "@/lib/uploadthing";
 import { Upload, FileText, Check, CloudUpload } from "lucide-react";
 import { BRANCHES, getSemesters, getCourses, NOTE_TYPES, EXAM_TYPES } from "@/lib/constants";
 
@@ -23,6 +23,12 @@ export default function UploadPage() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const { startUpload } = useUploadThing("pdfUploader", {
+    onUploadProgress: (p) => {
+      setUploadProgress(p);
+    },
+  });
 
   // Derived data
   const semesters = formData.branch ? getSemesters(formData.branch) : [];
@@ -89,9 +95,11 @@ export default function UploadPage() {
     setUploadProgress(0);
 
     try {
-      const pdfUrl = await uploadPdfToStorage(pdfFile, (percent) => {
-        setUploadProgress(percent);
-      });
+      const uploadedFiles = await startUpload([pdfFile]);
+      if (!uploadedFiles || uploadedFiles.length === 0) {
+        throw new Error("File upload failed or was cancelled.");
+      }
+      const pdfUrl = uploadedFiles[0].url;
 
       await uploadNote({
         title: formData.title,

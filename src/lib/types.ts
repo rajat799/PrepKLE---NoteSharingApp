@@ -1,15 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type FirestoreDate = any; // Firestore Timestamp or JS Date — handled at runtime
+type FirestoreDate = string | Date;
 
-/**
- * Safely convert a Firestore Timestamp or JS Date to a standard Date.
- * Firestore returns Timestamp objects with a .toDate() method.
- */
 export function toJsDate(value: FirestoreDate): Date {
   if (!value) return new Date();
-  if (value.toDate) return value.toDate(); // Firestore Timestamp
   if (value instanceof Date) return value;
-  return new Date(value); // fallback for string/number
+  return new Date(value);
 }
 
 export interface Note {

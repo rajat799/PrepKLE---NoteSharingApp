@@ -2,30 +2,23 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { auth, db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { auth } from "@/lib/firebase";
 
 interface AuthContextType {
   user: User | null;
   isAdmin: boolean;
-  isMainAdmin: boolean;
-  isSubAdmin: boolean;
   loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   isAdmin: false,
-  isMainAdmin: false,
-  isSubAdmin: false,
   loading: true,
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isMainAdmin, setIsMainAdmin] = useState(false);
-  const [isSubAdmin, setIsSubAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,36 +28,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (firebaseUser?.email) {
         const emailLower = firebaseUser.email.toLowerCase();
         
-        // 1. Check Main Admin (Environment Variable)
-        const envAdmins = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
-          .split(",")
-          .map((e) => e.trim().toLowerCase())
-          .filter(Boolean);
-          
-        if (envAdmins.includes(emailLower)) {
-          setIsMainAdmin(true);
-          setIsSubAdmin(false);
+        // ONLY rajatmalapur@gmail.com is an admin
+        if (emailLower === "rajatmalapur@gmail.com") {
           setIsAdmin(true);
         } else {
-          // 2. Check Sub Admin (Firestore)
-          try {
-            const docRef = doc(db, "admins", emailLower);
-            const docSnap = await getDoc(docRef);
-            
-            const isSub = docSnap.exists();
-            setIsMainAdmin(false);
-            setIsSubAdmin(isSub);
-            setIsAdmin(isSub);
-          } catch (error) {
-            console.error("Failed to verify sub-admin status:", error);
-            setIsMainAdmin(false);
-            setIsSubAdmin(false);
-            setIsAdmin(false);
-          }
+          setIsAdmin(false);
         }
       } else {
-        setIsMainAdmin(false);
-        setIsSubAdmin(false);
         setIsAdmin(false);
       }
       
@@ -75,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, isMainAdmin, isSubAdmin, loading }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading }}>
       {children}
     </AuthContext.Provider>
   );

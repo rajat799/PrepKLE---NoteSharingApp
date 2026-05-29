@@ -7,12 +7,14 @@ interface StatsProps {
   totalNotes: number;
   totalBranches: number;
   totalSubjects: number;
+  recentUploads: number;
 }
 
 export function StatsSection({
   totalNotes,
   totalBranches,
   totalSubjects,
+  recentUploads,
 }: StatsProps) {
   return (
     <section className="py-8 px-4 bg-[#111111]">
@@ -25,7 +27,7 @@ export function StatsSection({
                 <FileText size={24} />
               </div>
               <div>
-                <div className="text-2xl font-bold text-white">{totalNotes}+</div>
+                <div className="text-2xl font-bold text-white">{totalNotes}</div>
                 <div className="text-sm text-[#A0A0A0]">Notes</div>
               </div>
             </div>
@@ -45,7 +47,7 @@ export function StatsSection({
                 <BookMarked size={24} />
               </div>
               <div>
-                <div className="text-2xl font-bold text-white">{totalSubjects}+</div>
+                <div className="text-2xl font-bold text-white">{totalSubjects}</div>
                 <div className="text-sm text-[#A0A0A0]">Subjects</div>
               </div>
             </div>
@@ -55,7 +57,7 @@ export function StatsSection({
                 <FileText size={24} />
               </div>
               <div>
-                <div className="text-2xl font-bold text-white">50+</div>
+                <div className="text-2xl font-bold text-white">{recentUploads}</div>
                 <div className="text-sm text-[#A0A0A0]">Uploads this week</div>
               </div>
             </div>

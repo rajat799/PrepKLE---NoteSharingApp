@@ -1,22 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getPendingNotes, approveNote, rejectNote, getApprovedNotes, getSubAdmins, addSubAdmin, removeSubAdmin } from "@/lib/firestore";
+import { getPendingNotes, approveNote, rejectNote, getApprovedNotes } from "@/lib/firestore";
 import { signInWithGoogle, logOut } from "@/lib/auth";
 import { useAuth } from "@/contexts/AuthContext";
-import { Note, Admin, toJsDate } from "@/lib/types";
+import { Note, toJsDate } from "@/lib/types";
 import { Trash2, Check, X, LogIn, LogOut, Shield, Eye, Clock, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/components/common/Toast";
 
 export default function AdminPanel() {
-  const { user, isAdmin, isMainAdmin, loading: authLoading } = useAuth();
-  const [tab, setTab] = useState<"pending" | "approved" | "admins">("pending");
+  const { user, isAdmin, loading: authLoading } = useAuth();
+  const [tab, setTab] = useState<"pending" | "approved">("pending");
   const [pendingNotes, setPendingNotes] = useState<Note[]>([]);
   const [approvedNotes, setApprovedNotes] = useState<Note[]>([]);
-  const [admins, setAdmins] = useState<Admin[]>([]);
-  const [newAdminEmail, setNewAdminEmail] = useState("");
-  const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -29,42 +26,14 @@ export default function AdminPanel() {
 
   const fetchData = async () => {
     try {
-      const [pending, approved, subAdmins] = await Promise.all([
+      const [pending, approved] = await Promise.all([
         getPendingNotes(),
-        getApprovedNotes(),
-        isMainAdmin ? getSubAdmins() : Promise.resolve([])
+        getApprovedNotes()
       ]);
       setPendingNotes(pending);
       setApprovedNotes(approved);
-      if (isMainAdmin) setAdmins(subAdmins);
     } catch (error) {
       console.error("Failed to fetch data:", error);
-    }
-  };
-
-  const handleAddAdmin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newAdminEmail.trim() || !user?.email) return;
-    try {
-      await addSubAdmin(newAdminEmail, user.email);
-      setNewAdminEmail("");
-      showToast("Sub-admin added!", "success");
-      fetchData();
-    } catch (error) {
-      console.error("Failed to add sub-admin:", error);
-      showToast("Failed to add sub-admin", "error");
-    }
-  };
-
-  const handleRemoveAdmin = async (email: string) => {
-    if (!confirm(`Are you sure you want to remove ${email} as a sub-admin?`)) return;
-    try {
-      await removeSubAdmin(email);
-      showToast("Sub-admin removed", "info");
-      fetchData();
-    } catch (error) {
-      console.error("Failed to remove sub-admin:", error);
-      showToast("Failed to remove sub-admin", "error");
     }
   };
 
@@ -170,65 +139,10 @@ export default function AdminPanel() {
           >
             <CheckCircle size={16} /> Approved ({approvedNotes.length})
           </button>
-          {isMainAdmin && (
-            <button
-              onClick={() => setTab("admins")}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${tab === "admins"
-                ? "bg-[#0F2942] border-2 border-[#60A5FA] text-[#F5F5F5]"
-                : "paper-flat text-[#A0A0A0] hover:text-[#F5F5F5]"
-                }`}
-            >
-              <Shield size={16} /> Admins
-            </button>
-          )}
         </div>
 
         {/* Content */}
-        {tab === "admins" && isMainAdmin ? (
-          <div className="space-y-6 animate-fade-in">
-            <div className="paper-flat rounded-xl p-6">
-              <h2 className="text-xl font-bold text-[#F5F5F5] mb-4">Add Sub-Admin</h2>
-              <form onSubmit={handleAddAdmin} className="flex gap-3">
-                <input
-                  type="email"
-                  value={newAdminEmail}
-                  onChange={(e) => setNewAdminEmail(e.target.value)}
-                  placeholder="Enter email address"
-                  className="flex-1 input-dark"
-                  required
-                />
-                <button type="submit" className="btn-warm py-2 px-6 rounded-lg whitespace-nowrap">
-                  Add Admin
-                </button>
-              </form>
-            </div>
-
-            <div className="paper-flat rounded-xl p-6">
-              <h2 className="text-xl font-bold text-[#F5F5F5] mb-4">Current Sub-Admins</h2>
-              {admins.length === 0 ? (
-                <p className="text-[#A0A0A0] text-sm py-4">No sub-admins added yet.</p>
-              ) : (
-                <div className="space-y-3">
-                  {admins.map((admin) => (
-                    <div key={admin.email} className="flex items-center justify-between p-4 rounded-lg bg-[#1A1A1A] border border-[#333333]">
-                      <div>
-                        <p className="font-medium text-[#F5F5F5]">{admin.email}</p>
-                        <p className="text-xs text-[#6B7280]">Added by {admin.addedBy} on {toJsDate(admin.createdAt).toLocaleDateString()}</p>
-                      </div>
-                      <button
-                        onClick={() => handleRemoveAdmin(admin.email)}
-                        className="p-2 text-[#F87171] hover:bg-[#360C15] rounded-lg transition-colors"
-                        title="Remove Sub-Admin"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        ) : tab === "pending" ? (
+        {tab === "pending" ? (
           <div className="space-y-4">
             {pendingNotes.length === 0 ? (
               <div className="text-center py-16 paper-flat rounded-xl">

@@ -38,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${dmSans.variable} ${caveat.variable} antialiased`}>
+      <body className={`${dmSans.variable} ${caveat.variable} antialiased`} suppressHydrationWarning>
         <AuthProvider>
           <ToastProvider>
             <Header />

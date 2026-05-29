@@ -3,14 +3,27 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, LogIn, LogOut, Shield, User } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { signInWithGoogle, logOut } from "@/lib/auth";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const { user, isAdmin } = useAuth();
   const pathname = usePathname();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setProfileMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -63,34 +76,79 @@ export function Header() {
           </div>
 
           {/* Right side — auth */}
-          <div className="hidden md:flex items-center gap-3">
-            {user ? (
-              <button
-                onClick={() => logOut()}
-                className="flex items-center gap-2 text-sm text-[#A0A0A0] hover:text-[#E06B3C] transition-colors"
-                title={user.email || ""}
-              >
-                {user.photoURL ? (
-                  <img
-                    src={user.photoURL}
-                    alt=""
-                    className="w-8 h-8 rounded-full border-2 border-[#333333]"
-                  />
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-[#1A1A1A] flex items-center justify-center text-[#FBBF24] text-sm font-bold border border-[#333333]">
-                    {user.email?.[0]?.toUpperCase() || "U"}
-                  </div>
-                )}
-              </button>
-            ) : (
-              <button
-                onClick={() => signInWithGoogle()}
-                className="flex items-center gap-2 text-sm font-medium text-[#A0A0A0] hover:text-[#F5F5F5] transition-colors"
-              >
-                <div className="w-8 h-8 rounded-full bg-[#1A1A1A] border border-[#333333] flex items-center justify-center">
-                  <User size={16} className="text-[#A0A0A0]" />
+          <div className="hidden md:flex items-center gap-3 relative" ref={dropdownRef}>
+            <button
+              onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+              className="flex items-center gap-2 text-sm transition-colors focus:outline-none"
+              title={user?.email || "Account"}
+            >
+              {user?.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full border-2 border-[#333333] hover:border-[#FBBF24] transition-colors"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-[#1A1A1A] flex items-center justify-center border border-[#333333] hover:border-[#FBBF24] transition-colors">
+                  {user ? (
+                    <span className="text-[#FBBF24] text-sm font-bold">
+                      {user.email?.[0]?.toUpperCase() || "U"}
+                    </span>
+                  ) : (
+                    <User size={16} className="text-[#A0A0A0]" />
+                  )}
                 </div>
-              </button>
+              )}
+            </button>
+
+            {/* Dropdown Menu */}
+            {profileMenuOpen && (
+              <div className="absolute right-0 top-12 w-48 bg-[#111111] border border-[#333333] rounded-xl shadow-2xl overflow-hidden z-50 animate-fade-in py-1">
+                {user ? (
+                  <>
+                    <div className="px-4 py-3 border-b border-[#333333] mb-1">
+                      <p className="text-sm font-semibold text-[#F5F5F5] truncate">
+                        {user.displayName || 'User'}
+                      </p>
+                      <p className="text-xs text-[#A0A0A0] truncate">
+                        {user.email}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        logOut();
+                        setProfileMenuOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-[#E06B3C] hover:bg-[#1A1A1A] transition-colors flex items-center gap-2"
+                    >
+                      <LogOut size={16} />
+                      Log out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={async () => {
+                        try {
+                          await signInWithGoogle();
+                          setProfileMenuOpen(false);
+                        } catch (error: any) {
+                          if (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user') {
+                            // User just closed the popup, completely normal!
+                            console.log("Login cancelled by user");
+                          } else {
+                            console.error("Login failed:", error);
+                          }
+                        }
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-[#FBBF24] hover:bg-[#1A1A1A] transition-colors flex items-center gap-2"
+                    >
+                      <User size={16} />
+                      Continue with Google
+                    </button>
+                  </>
+                )}
+              </div>
             )}
           </div>
 

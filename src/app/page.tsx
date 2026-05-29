@@ -12,6 +12,7 @@ export default function HomePage() {
     totalNotes: 0,
     totalBranches: 0,
     totalSubjects: 0,
+    recentUploads: 0,
   });
   const [loading, setLoading] = useState(true);
 
