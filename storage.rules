@@ -1,0 +1,29 @@
+// Firebase Cloud Storage Rules for PrepKLE
+// Copy this to: Firebase Console → Storage → Rules
+
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // ===== PDF NOTES =====
+    match /notes/{allPaths=**} {
+      // Anyone can read PDFs
+      allow read: if true;
+      
+      // Anyone can upload PDFs (open submission, max 50 MB)
+      allow create: if request.resource.size <= 50 * 1024 * 1024
+                       && request.resource.contentType == 'application/pdf';
+      
+      // Only authenticated users can delete (admins)
+      allow delete: if request.auth != null;
+      
+      // No updates allowed
+      allow update: if false;
+    }
+    
+    // ===== CATCH-ALL =====
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

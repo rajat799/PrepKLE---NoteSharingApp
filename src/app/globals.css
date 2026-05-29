@@ -1,0 +1,322 @@
+@import "tailwindcss";
+
+/* =========================================
+   PrepKLE — Dark Mode Sketch Theme
+   ========================================= */
+
+:root {
+  --bg-dark: #111111;
+  --bg-panel: #1A1A1A;
+  --bg-card: #18181A;
+  --bg-sidebar: #151515;
+  --bg-sticky: #FCE762;
+  --bg-sticky-deep: #E5D058;
+
+  --text-primary: #F5F5F5;
+  --text-secondary: #A0A0A0;
+  --text-muted: #6B7280;
+
+  --accent: #FBBF24;
+  --accent-hover: #F59E0B;
+  --accent-light: rgba(251, 191, 36, 0.15);
+  --accent-orange: #E06B3C;
+  --accent-dark: #2A2111;
+
+  --border-light: #333333;
+  --border-medium: #444444;
+
+  --shadow-paper: 0 2px 8px rgba(0,0,0,0.4);
+  --shadow-paper-hover: 0 4px 16px rgba(0,0,0,0.6);
+  --shadow-lifted: 0 8px 24px rgba(0,0,0,0.8);
+}
+
+@theme inline {
+  --color-background: var(--bg-dark);
+  --color-foreground: var(--text-primary);
+  --font-sans: var(--font-dm-sans);
+}
+
+/* =========================================
+   Base
+   ========================================= */
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+html, body {
+  background: #111111 !important;
+  background-color: #111111 !important;
+}
+
+body {
+  color: var(--text-primary);
+  font-family: var(--font-dm-sans, 'DM Sans', system-ui, -apple-system, sans-serif);
+  overflow-x: hidden;
+}
+
+/* =========================================
+   Custom Scrollbar
+   ========================================= */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-warm);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-brown);
+}
+
+/* =========================================
+   Paper Card
+   ========================================= */
+.paper-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  box-shadow: var(--shadow-paper);
+  transition: all 0.2s ease;
+}
+.paper-card:hover {
+  box-shadow: var(--shadow-paper-hover);
+  transform: translateY(-2px);
+}
+
+.paper-flat {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  box-shadow: var(--shadow-paper);
+}
+
+/* =========================================
+   Sticky Note
+   ========================================= */
+.sticky-note {
+  background: var(--bg-sticky);
+  border: 1px solid #D4A017;
+  border-radius: 4px;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+  position: relative;
+  color: #111111; /* Always dark text on yellow note */
+}
+.sticky-note::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 20px;
+  width: 40px;
+  height: 8px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 0 0 4px 4px;
+}
+
+/* =========================================
+   Sketch-style accents
+   ========================================= */
+.sketch-underline {
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--accent);
+}
+
+.hand-font {
+  font-family: var(--font-caveat, 'Caveat', cursive);
+}
+
+/* =========================================
+   Buttons
+   ========================================= */
+.btn-warm {
+  background: var(--accent);
+  color: #111111; /* Dark text on bright yellow */
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-warm:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-outline-warm {
+  background: transparent;
+  border: 2px solid var(--border-medium);
+  color: var(--text-primary);
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-outline-warm:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+
+.btn-paper {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-light);
+  color: var(--text-primary);
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: var(--shadow-paper);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-paper:hover {
+  box-shadow: var(--shadow-paper-hover);
+  border-color: var(--accent);
+}
+
+/* =========================================
+   Input Styles
+   ========================================= */
+.input-warm {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-light);
+  color: var(--text-primary);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+.input-warm::placeholder {
+  color: var(--text-muted);
+}
+.input-warm:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.25);
+}
+
+.select-warm {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-light);
+  color: var(--text-primary);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.select-warm:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.25);
+}
+
+/* =========================================
+   Tag pills
+   ========================================= */
+.tag-sketch {
+  display: inline-block;
+  background: var(--bg-warm);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.2rem 0.65rem;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+.tag-sketch:hover {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent-brown);
+}
+
+/* =========================================
+   Note type badges
+   ========================================= */
+.badge-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.badge-pdf { background: #3B1B1D; color: #EF5350; border: 1px solid #7F2225; }
+.badge-branch { background: #132A42; color: #64B5F6; border: 1px solid #1C4066; }
+.badge-sem { background: #321B3A; color: #BA68C8; border: 1px solid #582A69; }
+
+/* =========================================
+   Animations
+   ========================================= */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gentle-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes shimmer-warm {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-fade-in {
+  animation: fade-in-up 0.4s ease-out;
+}
+
+/* =========================================
+   Skeleton (warm shimmer)
+   ========================================= */
+.skeleton-warm {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-warm);
+  border-radius: 8px;
+}
+.skeleton-warm::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.05),
+    transparent
+  );
+  animation: shimmer-warm 1.5s ease-in-out infinite;
+}
+
+/* =========================================
+   Notebook / PDF preview area
+   ========================================= */
+.notebook-frame {
+  background: #111111; /* Dark background */
+  border: 1px solid #333333;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+}
+
+/* =========================================
+   Divider with ornament
+   ========================================= */
+.divider-ornament {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+}
+.divider-ornament::before,
+.divider-ornament::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border-light);
+}
