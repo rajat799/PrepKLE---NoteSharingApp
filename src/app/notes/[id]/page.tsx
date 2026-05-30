@@ -105,7 +105,9 @@ export default function NotePage() {
                 <p className="text-lg font-semibold text-[#F5F5F5] mb-2">
                   {note.title}
                 </p>
-                <p className="text-sm text-[#6B7280] mb-8">PDF Document</p>
+                <p className="text-sm text-[#6B7280] mb-8">
+                  {note.noteType === "PPT" ? "PowerPoint Presentation" : "PDF Document"}
+                </p>
 
                 {note.pdfUrl && (
                   <div className="flex flex-col sm:flex-row gap-3">
@@ -114,14 +116,14 @@ export default function NotePage() {
                       className="btn-warm inline-flex items-center gap-2 py-2.5 px-5 rounded-lg text-sm"
                     >
                       <Eye size={16} />
-                      View PDF
+                      {note.noteType === "PPT" ? "View PPT" : "View PDF"}
                     </button>
                     <button
                       onClick={() => window.open(note.pdfUrl, "_blank")}
                       className="btn-paper inline-flex items-center gap-2 py-2.5 px-5 rounded-lg text-sm"
                     >
                       <Download size={16} />
-                      Download PDF
+                      {note.noteType === "PPT" ? "Download PPT" : "Download PDF"}
                     </button>
                   </div>
                 )}

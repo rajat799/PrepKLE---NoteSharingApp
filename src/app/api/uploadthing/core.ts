@@ -3,7 +3,11 @@ import { createUploadthing, type FileRouter } from "uploadthing/next";
 const f = createUploadthing();
 
 export const ourFileRouter = {
-  pdfUploader: f({ pdf: { maxFileSize: "32MB", maxFileCount: 1 } })
+  pdfUploader: f({
+    pdf: { maxFileSize: "32MB", maxFileCount: 1 },
+    "application/vnd.ms-powerpoint": { maxFileSize: "32MB", maxFileCount: 1 },
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation": { maxFileSize: "32MB", maxFileCount: 1 }
+  })
     .onUploadComplete(async ({ file }) => {
       console.log("Upload complete:", file.url);
       return { fileUrl: file.url };

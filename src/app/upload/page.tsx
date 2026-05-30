@@ -68,18 +68,38 @@ export default function UploadPage() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type === "application/pdf") {
-      if (file.size > 50 * 1024 * 1024) {
+    if (!file) return;
+
+    const extension = file.name.split('.').pop()?.toLowerCase();
+    const isPDF = file.type === "application/pdf" || extension === "pdf";
+    const isPPT = 
+      file.type === "application/vnd.ms-powerpoint" || 
+      file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
+      extension === "ppt" || 
+      extension === "pptx";
+
+    if (formData.noteType !== "PPT") {
+      if (!isPDF) {
         setPdfFile(null);
-        setError("PDF file is too large (max 50MB).");
+        setError("Please upload a valid PDF file");
         return;
       }
-      setPdfFile(file);
-      setError(null);
     } else {
-      setPdfFile(null);
-      setError("Please upload a valid PDF file");
+      if (!isPDF && !isPPT) {
+        setPdfFile(null);
+        setError("Please upload a valid PPT, PPTX or PDF file");
+        return;
+      }
     }
+
+    if (file.size > 50 * 1024 * 1024) {
+      setPdfFile(null);
+      setError("File is too large (max 50MB).");
+      return;
+    }
+
+    setPdfFile(file);
+    setError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -87,7 +107,7 @@ export default function UploadPage() {
     setError(null);
 
     if (!formData.title || !formData.branch || !formData.semester || !formData.courseName || !formData.noteType || !pdfFile) {
-      setError("Please fill in all required fields and upload a PDF");
+      setError(`Please fill in all required fields and upload a ${formData.noteType === "PPT" ? "PDF or PPT/PPTX" : "PDF"} file`);
       return;
     }
 
@@ -316,14 +336,21 @@ export default function UploadPage() {
           {/* Drag & Drop upload */}
           <div>
             <label className="block text-xs font-bold text-[#A0A0A0] mb-1.5 uppercase tracking-wider">
-              Upload PDF *
+              {formData.noteType === "PPT" ? "Upload PPT/PPTX or PDF *" : "Upload PDF *"}
             </label>
             <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${
               pdfFile
                 ? "border-[#4ADE80] bg-[#0D2C1A]"
                 : "border-[#444444] hover:border-[#FBBF24] hover:bg-[#2A2111]"
             }`}>
-              <input type="file" accept=".pdf" onChange={handleFileChange} className="hidden" id="pdf-upload" required />
+              <input 
+                type="file" 
+                accept={formData.noteType === "PPT" ? ".pdf,.ppt,.pptx" : ".pdf"} 
+                onChange={handleFileChange} 
+                className="hidden" 
+                id="pdf-upload" 
+                required 
+              />
               <label htmlFor="pdf-upload" className="cursor-pointer">
                 <div className="flex flex-col items-center gap-2">
                   {pdfFile ? (
@@ -337,7 +364,9 @@ export default function UploadPage() {
                       <CloudUpload size={36} className="text-[#6B7280]" />
                       <p className="hand-font text-xl font-bold text-[#F5F5F5]">Drag & Drop</p>
                       <p className="text-sm text-[#6B7280]">or click to browse files</p>
-                      <p className="text-xs text-[#444444]">PDF (Max 50MB)</p>
+                      <p className="text-xs text-[#444444]">
+                        {formData.noteType === "PPT" ? "PDF, PPT or PPTX (Max 50MB)" : "PDF (Max 50MB)"}
+                      </p>
                     </>
                   )}
                 </div>
@@ -349,7 +378,7 @@ export default function UploadPage() {
           {loading && (
             <div className="space-y-2">
               <div className="flex justify-between text-sm text-[#A0A0A0]">
-                <span>Uploading PDF...</span>
+                <span>Uploading file...</span>
                 <span className="font-medium text-[#FBBF24]">{uploadProgress}%</span>
               </div>
               <div className="w-full bg-[#333333] rounded-full h-2">

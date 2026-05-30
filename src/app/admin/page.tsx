@@ -171,7 +171,7 @@ export default function AdminPanel() {
                     <div className="flex flex-col gap-2">
                       {note.pdfUrl && (
                         <button onClick={() => window.open(note.pdfUrl, "_blank")} className="btn-warm flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm">
-                          <Eye size={16} /> View PDF
+                          <Eye size={16} /> {note.noteType === "PPT" ? "View PPT" : "View PDF"}
                         </button>
                       )}
                       <button onClick={() => handleApprove(note.id)} className="flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold bg-[#0D2C1A] border border-[#164A2C] text-[#4ADE80] hover:bg-[#164A2C] transition-colors">
