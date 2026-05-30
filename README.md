@@ -107,7 +107,7 @@ Visit http://localhost:3000
 
 ##  Admin Access
 
-Default password: `PrepKLE@Admin2025` (Change in `src/app/admin/page.tsx`)
+Admin access is controlled via Firebase Google Authentication. Only emails configured in the `NEXT_PUBLIC_ADMIN_EMAILS` environment variable are authorized to access the admin panel.
 
 Visit: http://localhost:3000/admin
 

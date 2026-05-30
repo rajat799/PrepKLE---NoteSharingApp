@@ -1,9 +1,15 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Admin from "@/models/Admin";
+import { verifyAdminToken } from "@/lib/auth-server";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const isAdmin = await verifyAdminToken(req);
+    if (!isAdmin) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     await dbConnect();
     const admins = await Admin.find().sort({ createdAt: -1 });
     return NextResponse.json(admins);
@@ -14,6 +20,11 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    const isAdmin = await verifyAdminToken(req);
+    if (!isAdmin) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     await dbConnect();
     const body = await req.json();
     
@@ -37,6 +48,11 @@ export async function POST(req: Request) {
 
 export async function DELETE(req: Request) {
   try {
+    const isAdmin = await verifyAdminToken(req);
+    if (!isAdmin) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     await dbConnect();
     const { searchParams } = new URL(req.url);
     const email = searchParams.get("email");
@@ -51,3 +67,4 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+

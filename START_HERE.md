@@ -62,7 +62,7 @@ Visit: http://localhost:3000
 - [ ] Dark mode toggle works
 - [ ] Browse page shows filters
 - [ ] Upload form loads
-- [ ] Admin panel requires password (`PrepKLE@Admin2025`)
+- [ ] Admin panel requires Google Sign-In
 
 **Total Time: ~15 minutes!**
 
@@ -112,11 +112,7 @@ Visit: http://localhost:3000
 ### Admin Panel Access
 
 - **URL**: http://localhost:3000/admin
-- **Password**: `PrepKLE@Admin2025`
-
-⚠️ **IMPORTANT**: Change this password immediately before going to production!
-
-Location: `src/app/admin/page.tsx` (line ~12)
+- **Authentication**: Google Sign-In (configured in `NEXT_PUBLIC_ADMIN_EMAILS`)
 
 ---
 
@@ -209,7 +205,7 @@ npm run lint
 
 ### "Admin panel shows error"
 
-→ Password is case-sensitive: `PrepKLE@Admin2025`
+→ Verify that your Google account email is configured in the `NEXT_PUBLIC_ADMIN_EMAILS` environment variable.
 
 ### "PDF upload fails"
 
@@ -232,8 +228,8 @@ npm run lint
 **Change Colors**
 → Edit `tailwind.config.ts` or add Tailwind classes
 
-**Change Admin Password**
-→ Edit `ADMIN_PASSWORD` in `src/app/admin/page.tsx`
+**Change Admin Emails**
+→ Edit `NEXT_PUBLIC_ADMIN_EMAILS` in `.env.local`
 
 ### Medium Changes (30 minutes each)
 
@@ -270,7 +266,7 @@ When you're ready to go live:
 
 - [ ] Configured Firebase project
 - [ ] Tested all features locally
-- [ ] Changed admin password
+- [ ] Configured admin email list
 - [ ] Pushed code to GitHub
 - [ ] Connected to Vercel
 - [ ] Added environment variables
@@ -316,7 +312,7 @@ http://localhost:3000
 # - [ ] Dark mode toggle appears
 # - [ ] Can click "Browse Notes"
 # - [ ] Can click "Upload"
-# - [ ] Can access /admin with password
+# - [ ] Can access /admin after Google Sign-In
 ```
 
 ---

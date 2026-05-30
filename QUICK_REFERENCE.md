@@ -33,7 +33,7 @@ npm run dev
 ## 🔐 Admin Credentials
 
 - **URL**: http://localhost:3000/admin
-- **Password**: `PrepKLE@Admin2025` (Change in `src/app/admin/page.tsx`)
+- **Authentication**: Google Sign-In (emails configured in `NEXT_PUBLIC_ADMIN_EMAILS`)
 
 ## 📦 Available NPM Commands
 
@@ -51,7 +51,7 @@ npm run lint        # Run ESLint
 | `src/app/page.tsx`        | Home page           | Hero content          |
 | `src/app/browse/page.tsx` | Browse filters      | Add branches/subjects |
 | `src/app/upload/page.tsx` | Upload form         | Form fields           |
-| `src/app/admin/page.tsx`  | Admin panel         | Password              |
+| `src/app/admin/page.tsx`  | Admin panel         | Admin UI actions      |
 | `src/lib/firebase.ts`     | Firebase setup      | Config                |
 | `src/lib/firestore.ts`    | DB functions        | Queries               |
 | `.env.local.example`      | Credential template | Reference             |
@@ -237,12 +237,10 @@ cat .env.local
 4. Check internet connection
 ```
 
-### Issue: "Admin panel shows wrong password error"
+### Issue: "Admin panel shows access denied"
 
-```typescript
-// Password is case-sensitive
-// Default: PrepKLE@Admin2025
-// Check src/app/admin/page.tsx line 12
+```
+Verify your Google account email is listed in the NEXT_PUBLIC_ADMIN_EMAILS environment variable.
 ```
 
 ## 📊 Database Queries
@@ -367,12 +365,12 @@ File: `src/app/browse/page.tsx`
 const BRANCHES = ['CSE', 'ECE', 'YourBranch', ...];
 ```
 
-### Change Admin Password
+### Change Admin Emails
 
-File: `src/app/admin/page.tsx`
+File: `.env.local`
 
-```typescript
-const ADMIN_PASSWORD = "YourNewPassword123";
+```
+NEXT_PUBLIC_ADMIN_EMAILS=email1@gmail.com,email2@gmail.com
 ```
 
 ### Modify Colors

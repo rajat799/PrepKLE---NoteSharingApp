@@ -28,8 +28,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (firebaseUser?.email) {
         const emailLower = firebaseUser.email.toLowerCase();
         
-        // ONLY rajatmalapur@gmail.com is an admin
-        if (emailLower === "rajatmalapur@gmail.com") {
+        // Check against environment variable admin list, falling back to rajatmalapur@gmail.com
+        const allowedEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS
+          ?.split(",")
+          .map((e) => e.trim().toLowerCase()) || [];
+
+        if (allowedEmails.includes(emailLower) || emailLower === "rajatmalapur@gmail.com") {
           setIsAdmin(true);
         } else {
           setIsAdmin(false);

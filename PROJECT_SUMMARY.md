@@ -50,7 +50,7 @@
 
 #### Admin Panel (`/admin`)
 
-- ✅ Password-protected access
+- ✅ Google Sign-In protected access
 - ✅ Two-tab interface: Pending & Approved
 - ✅ Pending notes review queue with PDF preview
 - ✅ Approve/Reject functionality
@@ -167,7 +167,7 @@ comments/
 - ✅ PDF preview capability
 - ✅ Approve/Reject with one click
 - ✅ Delete published notes
-- ✅ Password protection
+- ✅ Google Sign-In & token authorization
 
 ### 6. **Security & Rules**
 
@@ -335,11 +335,7 @@ prepkle/
 
 ### Admin Panel
 
-**Default Password**: `PrepKLE@Admin2025`
-
-⚠️ **Change this immediately in production!**
-
-Location: `src/app/admin/page.tsx` line ~12
+Admin access is controlled via Firebase Google Authentication. Authorized admin emails are configured in the `NEXT_PUBLIC_ADMIN_EMAILS` environment variable.
 
 ---
 
@@ -460,10 +456,10 @@ Location: `src/app/admin/page.tsx` line ~12
 
 ### Easy Customizations
 
-**Change Admin Password**
+**Change Admin Emails**
 
-- Edit `src/app/admin/page.tsx`
-- Update `ADMIN_PASSWORD` constant
+- Edit `.env.local`
+- Update `NEXT_PUBLIC_ADMIN_EMAILS` list
 
 **Add More Branches/Subjects**
 

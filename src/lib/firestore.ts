@@ -1,4 +1,5 @@
 import { Note, Comment, Admin } from "./types";
+import { auth } from "./firebase";
 
 // ================= NOTES =================
 
@@ -37,7 +38,12 @@ export async function getApprovedNotes(filters?: {
 }
 
 export async function getPendingNotes(): Promise<Note[]> {
-  const res = await fetch("/api/notes?status=pending");
+  const token = await auth.currentUser?.getIdToken();
+  const res = await fetch("/api/notes?status=pending", {
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
   if (!res.ok) throw new Error("Failed to fetch pending notes");
   return res.json();
 }
@@ -49,17 +55,25 @@ export async function getNoteById(id: string): Promise<Note | null> {
 }
 
 export async function approveNote(noteId: string): Promise<void> {
+  const token = await auth.currentUser?.getIdToken();
   const res = await fetch(`/api/notes/${noteId}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify({ action: "approve" }),
   });
   if (!res.ok) throw new Error("Failed to approve note");
 }
 
 export async function rejectNote(noteId: string): Promise<void> {
+  const token = await auth.currentUser?.getIdToken();
   const res = await fetch(`/api/notes/${noteId}`, {
     method: "DELETE",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
   });
   if (!res.ok) throw new Error("Failed to reject note");
 }
@@ -67,7 +81,9 @@ export async function rejectNote(noteId: string): Promise<void> {
 export async function updateNoteLikes(noteId: string, delta: number): Promise<void> {
   const res = await fetch(`/api/notes/${noteId}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ action: "like", delta }),
   });
   if (!res.ok) throw new Error("Failed to update likes");
@@ -106,23 +122,36 @@ export async function getStats() {
 // ================= ADMINS =================
 
 export async function getSubAdmins(): Promise<Admin[]> {
-  const res = await fetch("/api/admins");
+  const token = await auth.currentUser?.getIdToken();
+  const res = await fetch("/api/admins", {
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
   if (!res.ok) throw new Error("Failed to fetch admins");
   return res.json();
 }
 
 export async function addSubAdmin(email: string, addedBy: string): Promise<void> {
+  const token = await auth.currentUser?.getIdToken();
   const res = await fetch("/api/admins", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify({ email, addedBy }),
   });
   if (!res.ok) throw new Error("Failed to add sub-admin");
 }
 
 export async function removeSubAdmin(email: string): Promise<void> {
+  const token = await auth.currentUser?.getIdToken();
   const res = await fetch(`/api/admins?email=${encodeURIComponent(email)}`, {
     method: "DELETE",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
   });
   if (!res.ok) throw new Error("Failed to remove sub-admin");
 }

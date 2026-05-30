@@ -116,7 +116,7 @@ Open http://localhost:3000 in your browser
 - [ ] Dark mode toggle works
 - [ ] Browse page shows filters
 - [ ] Upload form renders correctly
-- [ ] Admin panel requires password
+- [ ] Admin panel requires Google Sign-In
 - [ ] Console has no errors
 
 ## 📝 Project Structure Overview
@@ -189,7 +189,7 @@ Same as above, configured in Vercel Dashboard under Environment Variables.
 ### Admin Panel Access
 
 - URL: `http://localhost:3000/admin`
-- Password: `PrepKLE@Admin2025` (change in `src/app/admin/page.tsx`)
+- Authentication: Google Sign-In (authorized emails configured in `NEXT_PUBLIC_ADMIN_EMAILS`)
 
 ### Admin Capabilities
 
@@ -252,15 +252,11 @@ Current theme preference:
 
 ## 🔐 Security Considerations
 
-### Current Setup (Development)
+### Current Setup
 
-- Open read/write for public
-- No authentication required
-- Simple password for admin
-
-### For Production
-
-1. **Admin Authentication**: Implement proper Firebase Auth
+- Firebase Google Authentication for administrator panel access.
+- Backend API validation via Firebase ID token verification.
+- Database access via mongoose models on the serverless backend.
 2. **Input Validation**: Add server-side validation
 3. **Rate Limiting**: Prevent spam uploads
 4. **Content Moderation**: Filter inappropriate submissions

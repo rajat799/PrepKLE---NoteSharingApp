@@ -242,7 +242,7 @@ pm run dev\ (1 min)
 - src/app/[page]/page.tsx (Edit pages)
 - src/components/ (Edit components)
 - tailwind.config.ts (Edit colors)
-- src/app/admin/page.tsx (Change admin password)
+- .env.local (Change admin emails)
 
 ---
 
@@ -262,9 +262,7 @@ No additional documentation needed to get started!
 
 ##  Admin Credentials
 
-**Default Password**: \PrepKLE@Admin2025\
-
- **CHANGE THIS IMMEDIATELY** in src/app/admin/page.tsx before going to production!
+Admin access is controlled via Firebase Google Authentication. Authorized admin emails are configured in the `NEXT_PUBLIC_ADMIN_EMAILS` environment variable.
 
 ---
 
